@@ -52,7 +52,7 @@ public class VocabBuilder extends javax.swing.JFrame {
         wb.readAndBuild();
         wb.printmap();
         //It is relative to src folder
-        URL imageUrl = this.getClass().getResource("/Resources/vocab.png");
+        URL imageUrl = this.getClass().getResource("src/Resources/vocab.png");
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(imageUrl);
         this.setIconImage(img);

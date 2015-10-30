@@ -22,7 +22,8 @@ public class WordBuilder {
     }
     
     public void readAndBuild() throws FileNotFoundException {
-        File file = new File("//home//gaurav//manning");
+        File file = new File("src/Resources/dict");
+        
         Scanner sc = new Scanner(file);
         int i = 1;
         while(sc.hasNextLine()){

@@ -42,6 +42,7 @@ import javax.swing.UIManager;
 
 public class VocabBuilderThread extends javax.swing.JFrame implements Runnable{
     private final int mapSize;
+    static Thread thread;
     
     /**
      * Creates new form Find
@@ -189,7 +190,7 @@ public class VocabBuilderThread extends javax.swing.JFrame implements Runnable{
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
      */
-    public static void main(String args[]) throws FileNotFoundException {
+    public static void main(String args[]) throws FileNotFoundException, MalformedURLException {
         /* Set
      * @throws java.io.FileNotFoundException
     public static void main(String args[]) throws FileNotFoundException {
@@ -225,19 +226,20 @@ public class VocabBuilderThread extends javax.swing.JFrame implements Runnable{
         //</editor-fold>
 
         //WordBuilder related code
-        
+        thread = new Thread(new VocabBuilderThread());
+        thread.start();
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new VocabBuilderThread().setVisible(true);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(VocabBuilderThread.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(VocabBuilderThread.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    new VocabBuilderThread().setVisible(true);
+//                } catch (FileNotFoundException ex) {
+//                    Logger.getLogger(VocabBuilderThread.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (MalformedURLException ex) {
+//                    Logger.getLogger(VocabBuilderThread.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
     }
 
     //Custom variables
@@ -261,7 +263,7 @@ public class VocabBuilderThread extends javax.swing.JFrame implements Runnable{
 
     private void fillForm(int num) throws FileNotFoundException {
         
-        File file = new File("/Resources/manning.txt");
+        File file = new File("src/Resources/dict");
         Scanner sc = new Scanner(file);
         int i = 1;
         while(sc.hasNextLine()){
@@ -278,22 +280,25 @@ public class VocabBuilderThread extends javax.swing.JFrame implements Runnable{
             ++i;
             
         }
+        this.setVisible(true);
 
     }
 
     public void run() {
-        int randomNum = rand.nextInt((mapSize - 1) + 1) + 1;
-        try {
-            fillForm(randomNum);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(VocabBuilderThread.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            Thread.sleep(3000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
+        while(true){
+            int randomNum = rand.nextInt((mapSize - 1) + 1) + 1;
+            try {
+                fillForm(randomNum);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(VocabBuilderThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                Thread.sleep(3000);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
         }
 
     }
-
 }
