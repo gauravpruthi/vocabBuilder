@@ -82,8 +82,8 @@ public class WordBuilder {
 //    This function updates the antonyms and synonyms list of words
     public ConcurrentLinkedQueue<String> scanForSynonyms(WordRecord originalWord, int p ) {
         boolean elementFound = false;
-        ConcurrentLinkedQueue<String> idleSynList = originalWord.getSyn();
-        ConcurrentLinkedQueue<String> activeSynList = originalWord.getSyn();
+        ConcurrentLinkedQueue<String> idleSynList = new ConcurrentLinkedQueue<String>(originalWord.getSyn());  //originalWord.getSyn();
+        ConcurrentLinkedQueue<String> activeSynList = new ConcurrentLinkedQueue<String>(originalWord.getSyn()); //originalWord.getSyn();
         //List<WordRecord> dummySynList = originalWord.getSyn();
         //add original word too in idle list..so as to prevent circular references
         //It has to be DELETED at the end
@@ -124,27 +124,12 @@ public class WordBuilder {
                 
                 
             }
-            //get original synonyms of a given word...
- 
-//            for(String tempWordToMatch : activeSynList) {
-//                elementFound = false;
-//                for(WordRecord origWordRecord : wordList) {
-//                    if(origWordRecord.getWord().equals(tempWordToMatch)) {
-//                        elementFound = true;
-//                        break;
-//                    }
-//                }
-//                if(elementFound == true) {
-//                    idleSynList.add(tempWordToMatch);
-//                    activeSynList.add(tempWordToMatch);
-//                }
-//
-//            }
+            
             iter.remove();
            
         }
             
-        activeSynListSynList.remove(originalWord.getWord());
+        idleSynList.remove(originalWord.getWord());
 
         
         return idleSynList;
