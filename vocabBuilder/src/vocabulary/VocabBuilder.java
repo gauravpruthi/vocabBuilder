@@ -45,17 +45,20 @@ public class VocabBuilder extends javax.swing.JFrame {
     /**
      * Creates new form Find
      * @throws java.io.FileNotFoundException
+     * @throws java.net.MalformedURLException
      */
     public VocabBuilder() throws FileNotFoundException, MalformedURLException {
         initComponents();
         wb = new WordBuilder();
         wb.readAndBuild();
-        wb.printmap();
+        wb.printWordList();
         //It is relative to src folder
-        URL imageUrl = this.getClass().getResource("src/Resources/vocab.png");
+        
+        /*URL imageUrl = this.getClass().getResource("/home/pruthi/vocab.png");
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(imageUrl);
         this.setIconImage(img);
+        */
               
     }
 
@@ -307,8 +310,8 @@ public class VocabBuilder extends javax.swing.JFrame {
         }
             
                 
-        File tempFile = new File("/home/gaurav/manningTemp");
-        File inputFile = new File("/home/gaurav/manning");
+        File tempFile = new File("src/Resources/dictTemp");
+        File inputFile = new File("src/Resources/dict");
         
         BufferedReader reader = null;
         try {
@@ -378,7 +381,7 @@ public class VocabBuilder extends javax.swing.JFrame {
 
     private void searchbuttonAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbuttonAction
         // TODO add your handling code here:
-        File file = new File("/home/gaurav/manning");
+        File file = new File("src/Resources/dict");
         String word = (wordField.getText()).toLowerCase();
         if(word.length() == 0) {
                 JOptionPane.showMessageDialog(this, "Please enter the word");
@@ -497,7 +500,7 @@ public class VocabBuilder extends javax.swing.JFrame {
 
     private boolean wordExists(String word) throws FileNotFoundException {
         
-        File file = new File("/home/gaurav/manning");
+        File file = new File("src/Resources/dict");
         Scanner sc = new Scanner(file);
         while(sc.hasNextLine()){
             String line = sc.nextLine();

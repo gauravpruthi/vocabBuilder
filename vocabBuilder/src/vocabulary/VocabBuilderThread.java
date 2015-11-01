@@ -53,7 +53,7 @@ public class VocabBuilderThread extends javax.swing.JFrame implements Runnable{
         initComponents();
         wb = new WordBuilder();
         wb.readAndBuild();
-        mapSize = wb.getMapSize();
+        mapSize = wb.getListSize();
         rand = new Random();
         //It is relative to src folder
         URL imageUrl = this.getClass().getResource("/Resources/vocab.png");
