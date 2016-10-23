@@ -50,9 +50,19 @@ public class VocabBuilder extends Application {
     
     Connection con;
     public static final String vocabTable = "vocabRecords";
+    TextField wordField = null;
+    TextField meaningField = null;
+    TextArea synArea = null;
+    TextArea antArea = null;
+    TextArea descArea = null;
     
     public VocabBuilder() throws SQLException {
-        this.con = DriverManager.getConnection("jdbc:sqlite:C:\\Work\\VocabDB\\VocabData.sqlite");
+        wordField = new TextField();
+        meaningField = new TextField();
+        synArea = new TextArea();
+        antArea = new TextArea();
+        descArea = new TextArea();
+        this.con = DriverManager.getConnection("jdbc:sqlite:nbproject\\VocabData.sqlite");
     }
     
     @Override
@@ -85,34 +95,27 @@ public class VocabBuilder extends Application {
         Label wordLabel = new Label("Word:");
         grid.add(wordLabel, 0, 1);
 
-        TextField wordField = new TextField();
         grid.add(wordField, 1, 1);
 
         Label meanLabel = new Label("Meaning:");
         grid.add(meanLabel, 0, 2);
-
-        TextField meaningField = new TextField();
         grid.add(meaningField, 1, 2);
 
         Label synLabel = new Label("Synonyms:");
         grid.add(synLabel, 0, 3);
 
-        TextArea synArea = new TextArea("");
-        //synArea.setPrefWidth(5);
         grid.add(synArea, 1, 3); //, 2, 1);
         synArea.setWrapText(true);
 
         Label antLabel = new Label("Antonyms:");
         grid.add(antLabel, 0, 4);
 
-        TextArea antArea = new TextArea("");
         grid.add(antArea, 1, 4); //, 2, 1);
         antArea.setWrapText(true);
 
         Label descLabel = new Label("Description:");
         grid.add(descLabel, 0, 5);
-
-        TextArea descArea = new TextArea("");
+        
         descArea.setWrapText(true);
         grid.add(descArea, 1, 5); //, 2, 1);
 
@@ -182,21 +185,38 @@ public class VocabBuilder extends Application {
         });
             
 
+        Button fetchBtn = new Button("Fetch");
+        HBox hbBtn3 = new HBox(10);
+        hbBtn3.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn3.getChildren().add(fetchBtn);
+        grid.add(hbBtn3, 0, 9);
+
+        fetchBtn.setOnAction (new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    try {
+                        boolean isExists = checkExistenceOfWord(wordField.getText());
+                        if(!isExists) {
+                            JOptionPane.showMessageDialog(null, "Word doesn't exist", "alert", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(VocabBuilder.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                        
+                    
+            }
+        });
+        
+        Button updateBtn = new Button("Update");
+        HBox hbBtn4 = new HBox(10);
+        hbBtn4.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn4.getChildren().add(updateBtn);
+        grid.add(hbBtn4, 1, 8);
+
         primaryStage.show ();
     }
             
-    private void saveData(BaseData baseData) throws SQLException {
-          
-        boolean doesWordExists = false;
-        String query = "INSERT INTO vocabTable (word, meaning, synonyms, antonyms, description, level) VALUES(?,?,?,?,?,?);";
-        // Replace variable with actual table name...
-        String sqlQuery  = query.replace("vocabTable",vocabTable);
-        doesWordExists = checkExistenceOfWord(baseData.word);
-        if(doesWordExists) {
-            JOptionPane.showMessageDialog(null, "Word already exists", "alert", JOptionPane.ERROR_MESSAGE);
-            return;
-            
-        }
+    private void saveData(BaseData baseData)  {
+        
         String sql = "SELECT word, meaning FROM vocabRecords";
         String word = baseData.word;
         String meaning = baseData.meaning;
@@ -205,18 +225,35 @@ public class VocabBuilder extends Application {
         String description = baseData.description;
         int level = baseData.level;
         
-        PreparedStatement statement = con.prepareStatement(sqlQuery);
-        statement.setString(1,word);
-        statement.setString(2,meaning);
-        statement.setString(3,synonyms);
-        statement.setString(4,antonyms);
-        statement.setString(5,description);
-        statement.setInt(6,level);
+        boolean doesWordExists = false;
+        String query = "INSERT INTO vocabTable (word, meaning, synonyms, antonyms, description, level) VALUES(?,?,?,?,?,?);";
+        // Replace variable with actual table name...
+        String sqlQuery  = query.replace("vocabTable",vocabTable);
         
-        statement.executeUpdate();
+        try {
+        doesWordExists = checkExistenceOfWord(baseData.word);
+        if(doesWordExists) {
+            JOptionPane.showMessageDialog(null, "Word already exists", "alert", JOptionPane.ERROR_MESSAGE);
+            return;
+            
+        }
+            PreparedStatement statement = con.prepareStatement(sqlQuery);
+            statement.setString(1,word);
+            statement.setString(2,meaning);
+            statement.setString(3,synonyms);
+            statement.setString(4,antonyms);
+            statement.setString(5,description);
+            statement.setInt(6,level);
 
-        con.commit();
-        
+            statement.executeUpdate();
+
+            con.commit();
+            JOptionPane.showMessageDialog(null, "Word added successfully", "alert", JOptionPane.ERROR_MESSAGE);
+
+        }
+        catch(Exception sqe) {
+            JOptionPane.showMessageDialog(null, "Word addition failed", "alert", JOptionPane.ERROR_MESSAGE);
+        }
         // End insert into
 //        Statement stmt = con.createStatement();
 //        ResultSet rs = stmt.executeQuery(sql);
